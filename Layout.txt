@@ -10,6 +10,6 @@ csa.sti
 │   ├── ScoringService.java    (award, deduct, double, steal)
 │   └── FastMoneyService.java  (compare responses to the key, total scores)
 └── ui/
-    ├── GameboardController.java   + gameboard.fxml
-    ├── LeaderboardController.java + leaderboard.fxml
-    └── FastMoneyController.java   + fastmoney.fxml
+    ├── Gameboard.java   + gameboard.fxml
+    ├── Leaderboard.java + leaderboard.fxml
+    └── FastMoney.java   + fastmoney.fxml
