@@ -1,0 +1,17 @@
+csa.sti
+├── App.java
+├── model/
+│   ├── Team.java              (name + score)
+│   ├── Question.java          (category, points, text, answer, used)
+│   ├── FastMoneyQuestion.java (prompt + answer key with point values)
+│   └── FastMoneyResponse.java (who answered what)
+├── data/
+│   └── QuestionBank.java      (builds the categories/questions, swappable per game)
+├── logic/
+│   ├── GameState.java         (the shared teams, board, and fast money data)
+│   ├── ScoringService.java    (award, deduct, double, steal)
+│   └── FastMoneyService.java  (compare responses to the key, total scores)
+└── ui/
+    ├── GameboardController.java   + gameboard.fxml
+    ├── LeaderboardController.java + leaderboard.fxml
+    └── FastMoneyController.java   + fastmoney.fxml
