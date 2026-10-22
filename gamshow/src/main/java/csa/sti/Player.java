@@ -20,12 +20,14 @@ public class Player {
         return score;
     }
 
-    //Setteres
+    //Setters
     public void setName(String name) {
+        //User validation goes here
         this.name = name;
     }
 
     public void setScore(int score) {
+        //User validation goes here
         this.score = score;
     }
 }
