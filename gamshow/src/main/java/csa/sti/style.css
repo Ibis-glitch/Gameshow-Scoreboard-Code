@@ -66,3 +66,37 @@
 .table-view .column-header .label { 
     -fx-font-fix: 16px;
 }
+
+.gameboard {
+    -fx-background-color: #ffb6c1; /* Light pink background */
+}
+
+.gameboard .title {
+    -fx-font-size: 50px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #974b57;
+}
+
+.gameboard .button {
+    -fx-background-color: white;
+    -fx-text-fill: #974b57;
+    -fx-font-size: 16px;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+.gameboard .button:hover {
+    -fx-background-color: #d69fa7; 
+}
+.button:disabled {
+    -fx-background-color: #d3d3d3; /* Standard light gray */
+    -fx-text-fill: #808080;         /* Muted gray text */
+    -fx-opacity: 0.8; 
+}
+
+/* --- Pink Gameboard Disabled Button Style --- */
+.gameboard .button:disabled {
+    -fx-background-color: #e2b9bf; /* A muted, darker dusty-pink/gray */
+    -fx-text-fill: #855c63;         /* Faded text color */
+    -fx-opacity: 0.7; 
+}
