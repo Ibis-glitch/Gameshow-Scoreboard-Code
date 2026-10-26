@@ -1,0 +1,68 @@
+/*modifies the whole page*/
+.root {
+    -fx-background-color: #7a7bb0;
+    -fx-font-family: "Segoe UI";
+}
+
+/*styling the title*/
+.title {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #29243b;
+}
+
+/*styling the button*/
+.button {
+    -fx-background-color: #a3aeec;
+    -fx-text-fill: #29243b;
+    -fx-font-size: 16px;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+}
+
+/*modifies the hovering*/
+.button:hover { -fx-background-color: #494a69; }
+.button:disabled {
+    -fx-background-color: #a3aeec;
+    -fx-text-fill: #29243b;
+    -fx-opacity: 1; 
+}
+
+/*Styling the table*/
+.table-view {
+    -fx-background-color: #f8f8ff;
+    -fx-font-size: 18px;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: #5c5c70;
+    -fx-border-width: 1;
+    -fx-padding: 0;
+}
+
+/*modifies the background of the column headers*/
+.column-header-background {
+    -fx-font-size: 18px;
+    -fx-background-radius: 15 15 0 0;
+    -fx-background-insets: 0;
+}
+
+/*modifies the column header*/
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/*modifies the filler*/
+.table-view .column-header-background .filler {
+    -fx-background-color: transparent;
+}
+
+/*modifies the corner*/
+.table-view .corner {
+    -fx-background-color: transparent;
+}
+
+/*modifies the oclumn header labels*/
+.table-view .column-header .label { 
+    -fx-font-fix: 16px;
+}
