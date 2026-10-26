@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.geometry.Insets?>
 
 <VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="csa.sti.Gameboard">
    <children>
-      <Label text="Gameboard" />
-      <TableView fx:id="leaderboardTable" prefHeight="200.0" prefWidth="300.0">
-         <columns>
-            <TableColumn fx:id="generalSortColumn" text="General sort" prefWidth="120.0" />
-            <TableColumn fx:id="codeLogicColumn" text="Code Logic" prefWidth="120.0" />
-            <TableColumn fx:id="spotMistakeColumn" text="Spot the Mistake" prefWidth="120.0" />
-            <TableColumn fx:id="unscrambleColumn" text="Unscramble Code" prefWidth="120.0" />
-            <TableColumn fx:id="insertionColumn" text="Insertion Mayhem" prefWidth="140.0" />
-         </columns>
-      </TableView>
+      <Label text="Gameboard" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+      <GridPane fx:id="board" alignment="CENTER" hgap="10.0" vgap="10.0" />
+      
       <Button fx:id="gameboardButton" text="Switch to Leaderboard" onAction="#switchToLeaderboard"/>
    </children>
    <padding>
