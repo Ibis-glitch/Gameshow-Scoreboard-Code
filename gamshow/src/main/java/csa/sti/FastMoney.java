@@ -26,7 +26,7 @@ public class FastMoney extends Application{
         //This loop creates 5 rows of questions, answers, and points and places them
         //in a grid
         for(int x=0; x<5; x++){
-            Label question = new Label("Question" + (x+1));
+            Label question = new Label("Question " + (x+1));
             Label answer = new Label("________");
             Label points = new Label("0");
             grid.add(question, 0, x);
