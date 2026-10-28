@@ -1,1 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="csa.sti.LandingController"
+            style="-fx-background-color: linear-gradient(to bottom right, #111318, #191b22 58%, #101116);">
+    <center>
+        <VBox alignment="CENTER" spacing="0" maxWidth="560"
+              style="-fx-background-color: rgba(18, 29, 46, 0.82); -fx-background-radius: 18; -fx-border-color: #27364b; -fx-border-radius: 18; -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.35), 32, 0.18, 0, 14);">
+            <padding><Insets top="42" right="52" bottom="42" left="52" /></padding>
+            <Label text="Select That Insertion!" wrapText="true" textAlignment="CENTER"
+                   style="-fx-text-fill: #f5f4f7; -fx-font-size: 50px; -fx-font-weight: bold; -fx-padding: 13 0 0 0;" />
+            <Label text="Put your sorting instincts to the test." textAlignment="CENTER"
+                   style="-fx-text-fill: #aaa9b4; -fx-font-size: 15px; -fx-padding: 10 0 0 0;" />
+            <HBox alignment="CENTER" spacing="0" style="-fx-background-color: #15171d; -fx-background-radius: 10; -fx-border-color: #30313b; -fx-border-radius: 10; -fx-padding: 13 18 13 18; -fx-margin: 24 0 0 0;">
+                <Label text="05" style="-fx-text-fill: #b7a2ff; -fx-font-size: 18px; -fx-font-weight: bold;" />
+                <Label text="   &gt;   " style="-fx-text-fill: #777783; -fx-font-size: 13px;" />
+                <Label text="12" style="-fx-text-fill: #e6e4eb; -fx-font-size: 18px; -fx-font-weight: bold;" />
+                <Label text="   &gt;   " style="-fx-text-fill: #777783; -fx-font-size: 13px;" />
+                <Label text="27" style="-fx-text-fill: #b7a2ff; -fx-font-size: 18px; -fx-font-weight: bold;" />
+                <Label text="   &gt;   " style="-fx-text-fill: #777783; -fx-font-size: 13px;" />
+                <Label text="41" style="-fx-text-fill: #e6e4eb; -fx-font-size: 18px; -fx-font-weight: bold;" />
+            </HBox>
+            <VBox spacing="10" fillWidth="true" maxWidth="360" style="-fx-padding: 28 0 0 0;">
+                <Button text="MAIN GAME     &gt;" onAction="#openMainGame" maxWidth="Infinity" prefHeight="54" mnemonicParsing="false"
+                        style="-fx-background-color: linear-gradient(to right, #c4b5fd, #9b83f5); -fx-text-fill: #1c1730; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;" />
+                <Button text="FAST MONEY" onAction="#openFastMoney" maxWidth="Infinity" prefHeight="50" mnemonicParsing="false"
+                        style="-fx-background-color: #202128; -fx-border-color: #383943; -fx-border-radius: 8; -fx-background-radius: 8; -fx-text-fill: #eeedf2; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand;" />
+                <Button text="LEADERBOARD" onAction="#openLeaderboard" maxWidth="Infinity" prefHeight="50" mnemonicParsing="false"
+                        style="-fx-background-color: #202128; -fx-border-color: #383943; -fx-border-radius: 8; -fx-background-radius: 8; -fx-text-fill: #eeedf2; -fx-font-size: 13px; -fx-font-weight: bold; -fx-cursor: hand;" />
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

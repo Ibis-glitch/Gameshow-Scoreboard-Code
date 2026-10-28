@@ -33,6 +33,11 @@ public class Leaderboard {
         App.setRoot("gameboard");
     }
 
+    @FXML
+    private void switchToLanding() throws IOException {
+        App.setRoot("landing");
+    }
+
     //this is to ensure that rankings will be the same if two
     //teams have the same score
     //(i.e. Team 1: 300 pts. Team 2: 300 pts. Team 3: 400 pts.)
