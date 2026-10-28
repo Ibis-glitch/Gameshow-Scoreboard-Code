@@ -50,4 +50,16 @@ public class Gameboard {
     private void switchToLeaderboard() throws IOException {
         App.setRoot("leaderboard");
     }
+
+    public void awardPoints(Player team, int selectedPointValue) {
+        ScoringService.awardPoints(team, selectedPointValue);
+    }
+
+    public void deductPoints(Player team, int selectedPointValue) {
+        ScoringService.deductPoints(team, selectedPointValue);
+    }
+
+    public void stealPoints(Player stealingTeam, Player otherTeam, int selectedPointValue) {
+        ScoringService.stealPoints(stealingTeam, otherTeam, selectedPointValue);
+    }
 }
