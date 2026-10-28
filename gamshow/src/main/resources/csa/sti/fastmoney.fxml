@@ -9,7 +9,7 @@
    <children>
       <Label text="Insert the Gameboard here later" />
       <Label text="Gameboard" />
-      <Button fx:id="gameboardButton" text="Switch to Leaderboard" onAction="#switchToLeaderboard"/>
+      <Button text="Back to Menu" onAction="#switchToLanding" />
    </children>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

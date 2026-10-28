@@ -12,6 +12,7 @@
       <GridPane fx:id="board" alignment="CENTER" hgap="10.0" vgap="10.0" />
       
       <Button fx:id="gameboardButton" text="Switch to Leaderboard" onAction="#switchToLeaderboard"/>
+      <Button text="Back to Menu" onAction="#switchToLanding" />
    </children>
    <padding>
       <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />

@@ -18,7 +18,8 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("leaderboard"), 640, 480);
+        scene = new Scene(loadFXML("landing"), 1000, 700);
+        stage.setTitle("Select That Insertion!");
         stage.setScene(scene);
         stage.show();
     }
