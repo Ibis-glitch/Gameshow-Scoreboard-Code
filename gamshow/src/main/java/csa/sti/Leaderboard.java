@@ -175,6 +175,7 @@ public class Leaderboard {
         dialog.setTitle("Remove Team");
         dialog.setHeaderText("Choose which team to remove");
         dialog.setContentText("Team:");
+        dialog.setContentText("New Name:");
         
         //Saving the option the player chooses to pick
         Optional<Player> result = dialog.showAndWait();
@@ -190,12 +191,76 @@ public class Leaderboard {
         });
     }
 
-    //Lucas makes the edit Team function here
-    //Make sure that it only allows to edit the team name
-    //not the score, nor ranking, nor streak
-    //Those should all be automatic 
+    // Editing the team name
+    // Used for the edit team button
     @FXML
     private void editTeam() throws IOException {
-       
+        //\Checking if there are any teams on the table
+        if (GameState.getTeams().isEmpty()) {
+            new Alert(Alert.AlertType.INFORMATION, "There are no teams present").showAndWait();
+            return;
+        }
+
+        //Open up a popoup for editing teams
+        ChoiceDialog<Player> dialog = new ChoiceDialog<>(
+            GameState.getTeams().get(0), GameState.getTeams());
+        dialog.setTitle("Edit Team");                           // Title of popup
+        dialog.setHeaderText("Choose which team to rename");    // Text of popup
+        dialog.setContentText("Team:");                         // Label for the dropdown 
+
+        // Saving the name for the team that needs to be editted
+        Optional<Player> result = dialog.showAndWait();
+        
+        // Returning if the player clicked cancel
+        if (result.isEmpty()) {
+            return;
+        }
+        
+        // New pop up for a text input (user types something)
+        TextInputDialog editDialog = new TextInputDialog();       // Text input popup
+        editDialog.setContentText("New name:");                  // Label for the text input
+
+        // Saving the new name for the team
+        Optional<String> editResult = editDialog.showAndWait();
+
+        // Returning if the user clicked cancel on the text input dialog
+        if (editResult.isEmpty()) {
+            return;
+        }
+
+        //Checking if there is an input 
+        editResult.ifPresent(input -> {
+            String name = input.trim();
+            
+            //First checking if the input is empty or not
+            //If it is empty, send an alert that you must input a name
+            if (name.isEmpty()) {
+                new Alert(Alert.AlertType.WARNING, "Input a team name").showAndWait();
+                return;
+            }
+
+            //This is under the condition that there is an input
+            //exists will be used to check if name already exists
+            boolean exists = GameState.getTeams().stream()
+                .anyMatch(t -> t != result.get()
+                    && t.getName().equalsIgnoreCase(name));
+            
+            //If the team name already exists, send back a message saying team already exists
+            if (exists) {
+                new Alert(Alert.AlertType.WARNING, "Team already exists ;p").showAndWait();
+                return;
+            }
+        });
+
+        // Asking for confirmation for changing the team name
+        result.ifPresent(team -> {
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                "Edit " + team.getName() + " to " + editResult.get() + "?");
+                
+            // Showing confirmation dialog and changing the team name if user confirms
+            confirm.showAndWait()
+                .filter(button -> button == ButtonType.OK)
+                .ifPresent(button -> team.setName(editResult.get()));
+        });
     }
 }

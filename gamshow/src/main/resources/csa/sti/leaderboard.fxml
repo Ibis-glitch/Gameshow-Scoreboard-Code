@@ -22,7 +22,7 @@
         <HBox spacing="10" alignment="CENTER">    
             <Button fx:id="addButton" text="Add Team" onAction="#addTeam" />
             <Button fx:id="removeButton" text="Remove Team" onAction="#removeTeam" />
-            <Button fx:id="editButton" text="Edit Team" /> 
+            <Button fx:id="editButton" text="Edit Team" onAction="#editTeam" /> 
         </HBox>
         <Button fx:id="leaderboardButton" text="Switch to Gameboard" onAction="#switchToGameboard" />
         <Button text="Back to Menu" onAction="#switchToLanding" />

@@ -26,7 +26,11 @@ public class GameState {
 
     //Shared list of teams
     private static final ObservableList<Player> teams = 
-        FXCollections.observableArrayList(p -> new Observable[] {p.scoreProperty(), p.streakProperty() });
+        FXCollections.observableArrayList(p -> new Observable[] 
+            {   
+                p.nameProperty(),
+                p.scoreProperty(), 
+                p.streakProperty() });
     
     //Runs once, only when the first time GameState is used
     static {
