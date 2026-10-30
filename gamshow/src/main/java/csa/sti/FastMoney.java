@@ -1,6 +1,9 @@
 package csa.sti;
 
+import java.io.IOException;
+
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -9,6 +12,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class FastMoney extends Application{
+
+    @FXML
+    private void switchToLanding() throws IOException {
+        App.setRoot("landing");
+    }
 
     //Contains all of the actual visual aspects of the fast money board
     @Override

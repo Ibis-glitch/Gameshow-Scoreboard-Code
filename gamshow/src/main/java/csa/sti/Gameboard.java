@@ -51,6 +51,11 @@ public class Gameboard {
         App.setRoot("leaderboard");
     }
 
+    @FXML
+    private void switchToLanding() throws IOException {
+        App.setRoot("landing");
+    }
+
     public void awardPoints(Player team, int selectedPointValue) {
         ScoringService.awardPoints(team, selectedPointValue);
     }
