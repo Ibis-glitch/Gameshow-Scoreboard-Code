@@ -4,3 +4,6 @@ A Jeopardy game show program. This program mainly tracks scorekeeping for a phys
 
 Usability: 
 You can't use this program beyond just scoring. Questions will have to be done on their own. You can test it here: https://github.com/Ibis-glitch/Gameshow-Scoreboard-Code/releases/tag/v1.0
+
+How to Use:
+Navigate between the leaderboard, gameboard, and the fast money page. The UI is rather intuitive. For the gameboard, click on the points to assign points to teams. 
