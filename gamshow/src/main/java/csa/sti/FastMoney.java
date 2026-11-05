@@ -25,8 +25,7 @@ public class FastMoney extends Application {
         //Creates a label at the top
         Label title = new Label("FAST MONEY");
         title.setStyle(
-            "-fx-font-size: 40px;" + "-fx-font-weight: bold;" + "-fx-text-fill: gold;"
-        );
+            "-fx-font-size: 40px;" + "-fx-font-weight: bold;" + "-fx-text-fill: gold;");
 
         //Defines the base for the grid
         GridPane grid = new GridPane();
@@ -58,13 +57,11 @@ public class FastMoney extends Application {
 
             //This label is a box representing the answer
             Label answer = new Label("        ");
-            answer.setStyle("-fx-background-color: black;" + "-fx-text-fill: white;" + "-fx-border-color: gold;" + "-fx-border-width: 2;" + "-fx-padding: 5 25 5 25;"
-            );
+            answer.setStyle("-fx-background-color: black;" + "-fx-text-fill: white;" + "-fx-border-color: gold;" + "-fx-border-width: 2;" + "-fx-padding: 5 25 5 25;");
 
             //This label represents the score alloted based on the answer
             Label points = new Label("0");
-            points.setStyle("-fx-text-fill: gold;" + "-fx-font-size: 18px;"
-            );
+            points.setStyle("-fx-text-fill: gold;" + "-fx-font-size: 18px;");
 
             //Organizes them
             grid.add(question, 0, x + 1);
@@ -73,13 +70,11 @@ public class FastMoney extends Application {
         }
 
         //Creates a border around the board
-        grid.setStyle( "-fx-border-color: gold;" + "-fx-border-width: 4;" + "-fx-padding: 20;"
-        );
+        grid.setStyle( "-fx-border-color: gold;" + "-fx-border-width: 4;" + "-fx-padding: 20;");
 
         //Shows the total score achieved by the player
         Label total = new Label("TOTAL: 0");
-        total.setStyle("-fx-font-size: 32px;" + "-fx-font-weight: bold;" + "-fx-text-fill: gold;"
-        );
+        total.setStyle("-fx-font-size: 32px;" + "-fx-font-weight: bold;" + "-fx-text-fill: gold;");
 
         //Stacks our labels and grids vertically
         VBox root = new VBox();
