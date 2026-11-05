@@ -9,7 +9,9 @@
 
 <VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="csa.sti.Gameboard" stylesheets="@style.css">
    <children>
+      //The title of the gameboard is here- bold and big
       <Label text="Gameboard" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
+      //This is the gridboard from the 
       <GridPane fx:id="board" alignment="CENTER" hgap="10.0" vgap="10.0" />
       <ComboBox fx:id="teamPicker" maxWidth="220.0" promptText="Select a team" />
       <Label fx:id="scoreLabel" text="Score: -" />
