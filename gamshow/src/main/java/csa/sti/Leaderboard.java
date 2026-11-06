@@ -195,7 +195,7 @@ public class Leaderboard {
     // Used for the edit team button
     @FXML
     private void editTeam() throws IOException {
-        //\Checking if there are any teams on the table
+        //Checking if there are any teams on the table
         if (GameState.getTeams().isEmpty()) {
             new Alert(Alert.AlertType.INFORMATION, "There are no teams present").showAndWait();
             return;
@@ -211,6 +211,7 @@ public class Leaderboard {
         // Saving the name for the team that needs to be editted
         Optional<Player> result = dialog.showAndWait();
         
+
         // Returning if the player clicked cancel
         if (result.isEmpty()) {
             return;
@@ -227,6 +228,7 @@ public class Leaderboard {
         if (editResult.isEmpty()) {
             return;
         }
+
 
         //Checking if there is an input 
         editResult.ifPresent(input -> {
@@ -250,17 +252,20 @@ public class Leaderboard {
                 new Alert(Alert.AlertType.WARNING, "Team already exists ;p").showAndWait();
                 return;
             }
-        });
 
-        // Asking for confirmation for changing the team name
-        result.ifPresent(team -> {
-            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
-                "Edit " + team.getName() + " to " + editResult.get() + "?");
-                
-            // Showing confirmation dialog and changing the team name if user confirms
-            confirm.showAndWait()
-                .filter(button -> button == ButtonType.OK)
-                .ifPresent(button -> team.setName(editResult.get()));
+            //The team does exist
+            else {
+                // Asking for confirmation for changing the team name
+                result.ifPresent(team -> {
+                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
+                        "Edit " + team.getName() + " to " + editResult.get() + "?");
+                        
+                    // Showing confirmation dialog and changing the team name if user confirms
+                    confirm.showAndWait()
+                        .filter(button -> button == ButtonType.OK)
+                        .ifPresent(button -> team.setName(editResult.get()));
+                });
+            }
         });
     }
 }
