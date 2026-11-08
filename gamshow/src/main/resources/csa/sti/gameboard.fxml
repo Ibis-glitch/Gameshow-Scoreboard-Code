@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Button?>
@@ -9,15 +10,16 @@
 
 <VBox alignment="CENTER" spacing="20.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="csa.sti.Gameboard" stylesheets="@style.css">
    <children>
-      //The title of the gameboard is here- bold and big
-      <Label text="Gameboard" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
-      //This is the gridboard from the 
+      <Label text="GAMEBOARD" style="-fx-font-size: 20px; -fx-font-weight: bold;" />
       <GridPane fx:id="board" alignment="CENTER" hgap="10.0" vgap="10.0" />
       <ComboBox fx:id="teamPicker" maxWidth="220.0" promptText="Select a team" />
       <Label fx:id="scoreLabel" text="Score: -" />
-      <Label fx:id="questionStatusLabel" text="Select a team and a question." />
+      <Label fx:id="questionStatusLabel" text="Select a team and a question to track points" />
+   <HBox alignment="CENTER" spacing="10.0">
       <Button fx:id="correctButton" text="Correct" onAction="#markCorrect" />
       <Button fx:id="incorrectButton" text="Incorrect" onAction="#markIncorrect" />
+      <Button fx:id="clearButton" text="Clear Board" onAction="#clearBoard"/>
+   </HBox>
       <Button fx:id="gameboardButton" text="Switch to Leaderboard" onAction="#switchToLeaderboard"/>
       <Button text="Back to Menu" onAction="#switchToLanding" />
    </children>
