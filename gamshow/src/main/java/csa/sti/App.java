@@ -1,3 +1,6 @@
+//Main App Class
+//Period 6- CSA-Commander Schenk
+//5 November 2026
 package csa.sti;
 
 import java.io.IOException;
