@@ -20,7 +20,7 @@ import java.util.Objects;
 
 public class FastMoneyService {
     private static final int QUESTION_COUNT = 5;
-    private static final String DEFAULT_RANGE = "'Form Responses 1'!B:F";
+    private static final String DEFAULT_RANGE = "B:F";
 
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(10))
@@ -43,9 +43,12 @@ public class FastMoneyService {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
-            String explanation = response.statusCode() == 403
-                    ? " Check that the Sheets API is enabled and that this sheet is readable with an API key."
-                    : "";
+            String explanation = switch (response.statusCode()) {
+                case 400 -> " Check that sheetRange uses valid A1 notation, for example B:F for columns B through F "
+                        + "on the first sheet.";
+                case 403 -> " Check that the Sheets API is enabled and that this sheet is readable with an API key.";
+                default -> "";
+            };
             String details = response.body().length() > 300
                     ? response.body().substring(0, 300) + "..."
                     : response.body();
