@@ -18,6 +18,8 @@ import javafx.collections.ObservableList;
 //Every screen should read from here so that they can access all the same teams
 public class GameState {
 
+    private static final boolean[][] usedQuestions = new boolean[5][5];
+
     //Saving the team to a file so that it can be accessed again
     //This is to ensure already created teams aren't deleted once broswer is closed and opened again
     //This is where the file is saved
@@ -45,6 +47,22 @@ public class GameState {
     //Lets other classes have access to the list of teams
     public static ObservableList<Player> getTeams() {
         return teams;
+    }
+
+    public static boolean isQuestionUsed(int column, int row) {
+        return usedQuestions[column][row];
+    }
+
+    public static void markQuestionUsed(int column, int row) {
+        usedQuestions[column][row] = true;
+    }
+
+    public static void clearUsedQuestions() {
+        for (int column = 0; column < usedQuestions.length; column++) {
+            for (int row = 0; row < usedQuestions[column].length; row++) {
+                usedQuestions[column][row] = false;
+            }
+        }
     }
 
     //Saving the list
