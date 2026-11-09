@@ -119,7 +119,7 @@ public class Gameboard {
         ScoringService.deductPoints(team, selectedPointValue);
         updateScoreLabel(team);
     }
-
+    //Gargi almost forgot to add this function, but she remembered in time... (Documented by Gargi haha)
     public void stealPoints(Player stealingTeam, Player otherTeam, int selectedPointValue) {
         ScoringService.stealPoints(stealingTeam, otherTeam, selectedPointValue);
         updateScoreLabel(stealingTeam);
