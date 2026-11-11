@@ -2,10 +2,12 @@ package csa.sti;
 
 import java.util.Objects;
 
+/** Applies score changes together with the corresponding answer streak updates. */
 public class ScoringService {
 
     public static void awardPoints(Player team, int points) {
         requireTeamAndPoints(team, points);
+        // Exact arithmetic prevents an overflow from silently corrupting the score.
         team.setScore(Math.addExact(team.getScore(), points));
         team.recordCorrect();
     }
@@ -23,6 +25,7 @@ public class ScoringService {
             throw new IllegalArgumentException("A team cannot steal points from itself");
         }
 
+        // Compute both results before updating either team so overflow cannot leave a partial transfer.
         int stealingTeamScore = Math.addExact(stealingTeam.getScore(), points);
         int otherTeamScore = Math.subtractExact(otherTeam.getScore(), points);
 

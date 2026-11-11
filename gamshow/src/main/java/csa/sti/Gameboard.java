@@ -18,6 +18,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 
 
+/** Builds and controls the main board, including scoring, steals, and round resets. */
 public class Gameboard {
 
     //the five categories, in the order they go across the board
@@ -97,6 +98,7 @@ public class Gameboard {
                     selectedQuestionRow = questionRow;
                     selectedTeam = team;
                     doublePointsApplied = false;
+                    // The final category uses a random base value; other categories use row values.
                     selectedPointValue = questionColumn == 4
                         ? ThreadLocalRandom.current().nextInt(100, 501)
                         : points;
@@ -166,6 +168,7 @@ public class Gameboard {
             return;
         }
 
+        // Doubling applies once to this selection, and updates the displayed amount immediately.
         doublePointsApplied = true;
         doublePointsButton.setDisable(true);
         questionStatusLabel.setText(categories[selectedQuestionColumn] + " - "
@@ -178,6 +181,7 @@ public class Gameboard {
             return;
         }
 
+        // The current team cannot also be selected as the stealing team.
         List<Player> eligibleTeams = GameState.getTeams().stream()
             .filter(team -> team != selectedTeam)
             .toList();
@@ -199,6 +203,7 @@ public class Gameboard {
 
     @FXML
     private void clearBoard() {
+        // A new board round also resets team scores, while preserving team names and streaks.
         GameState.clearUsedQuestions();
         for (Player team : GameState.getTeams()) {
             team.setScore(0);
@@ -213,6 +218,7 @@ public class Gameboard {
     }
 
     private void finishQuestion() {
+        // Consume the cell only after an outcome has been recorded.
         GameState.markQuestionUsed(selectedQuestionColumn, selectedQuestionRow);
         clearQuestionSelection("Select a team and a question.");
         setQuestionButtonsDisabled(false);
@@ -235,10 +241,12 @@ public class Gameboard {
     }
 
     private boolean isDoublePointsQuestion(int column, int row) {
+        // Only the middle Spot the Mistake cell and final Insertion Mayhem cell can be doubled.
         return (column == 2 && row == 2) || (column == 4 && row == 4);
     }
 
     private int pointsForSelectedQuestion() {
+        // Exact multiplication ensures an impossible overflow is reported rather than wrapped.
         return doublePointsApplied ? Math.multiplyExact(selectedPointValue, 2) : selectedPointValue;
     }
 

@@ -16,6 +16,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.ButtonType;
 
+/** Displays teams in score order and provides team add, remove, and rename actions. */
 public class Leaderboard {
 
     //Creating the variables
@@ -44,6 +45,7 @@ public class Leaderboard {
     //(#1 Team 3, #2 Team 2, #2, Team 1)
     @FXML
     private int rankOf(int score) {
+        // Competition ranking gives tied scores the same rank and skips subsequent positions.
         int higher = 0;
         for (Player p : GameState.getTeams()) {
             if (p.getScore() > score) higher ++;
@@ -105,7 +107,7 @@ public class Leaderboard {
                       .thenComparing(Player::getName, String.CASE_INSENSITIVE_ORDER));
         leaderboardTable.setItems(sorted);
         
-        //Listener is update the table
+        // Refresh cells after property updates change a team's score, name, or streak.
         sorted.addListener((javafx.collections.ListChangeListener<Player>) c->
             leaderboardTable.refresh());
 
@@ -148,7 +150,7 @@ public class Leaderboard {
                 return;
             }
 
-            //Actually adding the team to the table after passing all conditionals
+            // New teams start with no points and no answer streak.
             //Only input the team name, rankings should be automatic
             GameState.getTeams().add(new Player(name, 0, 0)); //score automatically set to zero
         });
@@ -183,6 +185,7 @@ public class Leaderboard {
         //Checking if the team exists
         //And then sending an alert saying if the user would like to confirm choice
         result.ifPresent(team -> {
+            // Require explicit confirmation before removing a team's persisted record.
             Alert confirm = new Alert(Alert.AlertType.CONFIRMATION,
                 "Remove " + team.getName() + " (score: " + team.getScore() + ")?");
             confirm.showAndWait()
@@ -244,6 +247,7 @@ public class Leaderboard {
             //This is under the condition that there is an input
             //exists will be used to check if name already exists
             boolean exists = GameState.getTeams().stream()
+                // Exclude the selected team so retaining its current name is allowed.
                 .anyMatch(t -> t != result.get()
                     && t.getName().equalsIgnoreCase(name));
             

@@ -18,15 +18,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+/** Fetches the Google Sheets response data and aggregates answers for the Fast Money round. */
 public class FastMoneyService {
+    // The FXML screen and survey are designed around five question columns.
     private static final int QUESTION_COUNT = 5;
     private static final String DEFAULT_RANGE = "B:F";
 
+    // Reuse a client across calls and cap how long a connection attempt may take.
     private final HttpClient httpClient = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(10))
             .build();
 
     public List<FastMoneyQuestion> fetchQuestions() throws IOException, InterruptedException {
+        // Environment variables override values from the optional local .env file.
         Map<String, String> config = loadConfiguration();
         String apiKey = requiredConfig(config, "apiKey");
         String spreadsheetId = requiredConfig(config, "spreadsheetId");
@@ -42,6 +46,7 @@ public class FastMoneyService {
                 .build();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
+        // Translate API failures into actionable messages instead of treating them as empty results.
         if (response.statusCode() < 200 || response.statusCode() >= 300) {
             String explanation = switch (response.statusCode()) {
                 case 400 -> " Check that sheetRange uses valid A1 notation, for example B:F for columns B through F "
@@ -60,11 +65,13 @@ public class FastMoneyService {
     }
 
     static List<FastMoneyQuestion> countAnswers(List<List<String>> rows) {
+        // One insertion-ordered map per question keeps the first submitted spelling for each answer.
         List<Map<String, FastMoneyResponse>> countsByQuestion = new ArrayList<>(QUESTION_COUNT);
         for (int question = 0; question < QUESTION_COUNT; question++) {
             countsByQuestion.add(new LinkedHashMap<>());
         }
 
+        // Row zero contains the question headers; subsequent rows contain contestant submissions.
         for (int rowIndex = 1; rowIndex < rows.size(); rowIndex++) {
             List<String> row = rows.get(rowIndex);
             for (int question = 0; question < QUESTION_COUNT && question < row.size(); question++) {
@@ -76,6 +83,7 @@ public class FastMoneyService {
                 Map<String, FastMoneyResponse> answerCounts = countsByQuestion.get(question);
                 String normalized = FastMoneyResponse.normalize(answer);
                 FastMoneyResponse previous = answerCounts.get(normalized);
+                // Aggregate equivalent spellings while retaining the first display form.
                 answerCounts.put(normalized, previous == null
                         ? new FastMoneyResponse(answer, 1)
                         : new FastMoneyResponse(previous.getAnswer(), Math.addExact(previous.getCount(), 1)));
@@ -84,6 +92,7 @@ public class FastMoneyService {
 
         List<FastMoneyQuestion> result = new ArrayList<>(QUESTION_COUNT);
         for (int question = 0; question < QUESTION_COUNT; question++) {
+            // Sort counts from most to least common for consistent response ordering.
             List<FastMoneyResponse> responses = countsByQuestion.get(question).values().stream()
                     .sorted(Comparator.comparingInt(FastMoneyResponse::getCount).reversed())
                     .toList();
@@ -97,6 +106,7 @@ public class FastMoneyService {
     }
 
     private static List<List<String>> parseResponseValues(String body) throws IOException {
+        // Parse just the JSON structures needed from the Sheets API without an external JSON library.
         Object parsed = new JsonReader(body).read();
         if (!(parsed instanceof Map<?, ?> responseObject)) {
             throw new IOException("Google Sheets returned an unexpected JSON response.");
@@ -128,6 +138,7 @@ public class FastMoneyService {
         Map<String, String> config = new LinkedHashMap<>();
         Path workingDirectory = Path.of("").toAbsolutePath();
         Path envFile = workingDirectory.resolve(".env");
+        // Also check the parent to support launching the Maven app from its module directory.
         if (!Files.isRegularFile(envFile) && workingDirectory.getParent() != null) {
             envFile = workingDirectory.getParent().resolve(".env");
         }
@@ -135,6 +146,7 @@ public class FastMoneyService {
         if (Files.isRegularFile(envFile)) {
             for (String line : Files.readAllLines(envFile, StandardCharsets.UTF_8)) {
                 String trimmed = line.trim();
+                // Ignore blank and commented lines; accept simple KEY=VALUE entries.
                 if (trimmed.isEmpty() || trimmed.startsWith("#")) {
                     continue;
                 }
@@ -153,6 +165,7 @@ public class FastMoneyService {
             }
         }
 
+        // Environment variables take precedence over values loaded from disk.
         for (String name : List.of("apiKey", "spreadsheetId", "sheetRange")) {
             String environmentValue = System.getenv(name);
             if (environmentValue != null && !environmentValue.isBlank()) {
@@ -181,6 +194,7 @@ public class FastMoneyService {
 
     private static final class JsonReader {
         private final String json;
+        // Cursor is advanced as each JSON token is consumed.
         private int position;
 
         private JsonReader(String json) {
@@ -190,6 +204,7 @@ public class FastMoneyService {
         private Object read() throws IOException {
             Object value = readValue();
             skipWhitespace();
+            // Reject valid prefixes followed by trailing garbage.
             if (position != json.length()) {
                 throw malformedJson();
             }
@@ -202,6 +217,7 @@ public class FastMoneyService {
                 throw malformedJson();
             }
 
+            // Dispatch on the next JSON token and return a Java representation of that value.
             return switch (json.charAt(position)) {
                 case '{' -> readObject();
                 case '[' -> readArray();
@@ -214,6 +230,7 @@ public class FastMoneyService {
         }
 
         private Map<String, Object> readObject() throws IOException {
+            // Read key/value pairs until the matching closing brace.
             position++;
             Map<String, Object> result = new LinkedHashMap<>();
             skipWhitespace();
@@ -239,6 +256,7 @@ public class FastMoneyService {
         }
 
         private List<Object> readArray() throws IOException {
+            // Read comma-separated values until the matching closing bracket.
             position++;
             List<Object> result = new ArrayList<>();
             skipWhitespace();
@@ -272,6 +290,7 @@ public class FastMoneyService {
                     continue;
                 }
 
+                // Decode the JSON escape sequences supported by strings.
                 if (position >= json.length()) {
                     throw malformedJson();
                 }
@@ -291,6 +310,7 @@ public class FastMoneyService {
         }
 
         private char readUnicodeEscape() throws IOException {
+            // A Unicode escape consists of four hexadecimal digits after the backslash.
             if (position + 4 > json.length()) {
                 throw malformedJson();
             }
@@ -305,6 +325,7 @@ public class FastMoneyService {
 
         private Object readNumber() throws IOException {
             int start = position;
+            // BigDecimal validates the token after the candidate numeric characters are collected.
             while (position < json.length()
                     && "-+0123456789.eE".indexOf(json.charAt(position)) >= 0) {
                 position++;
@@ -335,6 +356,7 @@ public class FastMoneyService {
         }
 
         private boolean consume(char expected) {
+            // Consume only on a match so callers can test for optional delimiters.
             if (position < json.length() && json.charAt(position) == expected) {
                 position++;
                 return true;
@@ -349,6 +371,7 @@ public class FastMoneyService {
         }
 
         private IOException malformedJson() {
+            // Include the cursor location to make malformed API responses diagnosable.
             return new IOException("Google Sheets returned malformed JSON near character " + position + ".");
         }
     }

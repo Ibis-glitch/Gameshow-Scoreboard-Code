@@ -13,20 +13,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 
-//Holds the shared game date (aka the lists of teams) 
-//Also allows for saving and loading team files
-//Every screen should read from here so that they can access all the same teams
+/** Stores shared teams and question-use state, and persists team changes locally. */
 public class GameState {
 
+    // Board coordinates are indexed as [column][row], matching the game-board buttons.
     private static final boolean[][] usedQuestions = new boolean[5][5];
 
-    //Saving the team to a file so that it can be accessed again
-    //This is to ensure already created teams aren't deleted once broswer is closed and opened again
-    //This is where the file is saved
+    // Save outside the application directory so team data survives app updates and restarts.
     private static final Path SAVE_FILE =
         Paths.get(System.getProperty("user.home"), "gameshow-teams.text");
 
-    //Shared list of teams
+    // The extractor turns Player property changes into observable list update events.
     private static final ObservableList<Player> teams = 
         FXCollections.observableArrayList(p -> new Observable[] 
             {   
@@ -34,29 +31,29 @@ public class GameState {
                 p.scoreProperty(), 
                 p.streakProperty() });
     
-    //Runs once, only when the first time GameState is used
+    // Load before attaching the listener so initialization does not immediately rewrite the file.
     static {
-        //Loading saved teams
         load();
-        //After loading, save every change to the file
-        //(i.e. team added, deleted, etc...)
-        //Listener keeps track of those things
+        // Persist additions, removals, and property updates made through the shared list.
         teams.addListener((ListChangeListener<Player>) c -> save());
     }
 
-    //Lets other classes have access to the list of teams
+    /** Returns the observable team list shared by all screens. */
     public static ObservableList<Player> getTeams() {
         return teams;
     }
 
+    /** Reports whether the board cell at the given column and row has been played. */
     public static boolean isQuestionUsed(int column, int row) {
         return usedQuestions[column][row];
     }
 
+    /** Marks a board cell as played so it cannot be selected again this round. */
     public static void markQuestionUsed(int column, int row) {
         usedQuestions[column][row] = true;
     }
 
+    /** Makes every board cell available for a new round. */
     public static void clearUsedQuestions() {
         for (int column = 0; column < usedQuestions.length; column++) {
             for (int row = 0; row < usedQuestions[column].length; row++) {
@@ -65,46 +62,39 @@ public class GameState {
         }
     }
 
-    //Saving the list
-    //Writes every team to a line
+    // Rewrite the snapshot so removals and edits are reflected as well as additions.
     private static void save() {
         List<String> lines = new ArrayList<>();
-        //the format for saving teams
-        //Done with a tab so that teams with comma don't get separated
+        // Tab separators allow commas in team names without affecting the saved fields.
         for (Player p : teams) {
             lines.add(p.getName() + "\t" + p.getScore() + "\t" + p.getStreak());
         }
         try {
-            //overwrites the file with current list
             Files.write(SAVE_FILE, lines, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            //catches errors
-            //if unable to save file, print that could not save team
+            // Report persistence failures without interrupting gameplay.
             System.err.println("Could not save teams: " + e.getMessage());
         }
     }
 
-    //For loading the saved teams
-    //Reads the save file to recreate the teams
+    // Restore the saved team snapshot; missing or malformed individual entries are skipped.
     private static void load() {
-        //No save file exists yet, therefore nothing to load
         if (!Files.exists(SAVE_FILE)) return;
         try {
             for (String line : Files.readAllLines(SAVE_FILE, StandardCharsets.UTF_8)) {
-                //Split the line back into the full name, score, and streak
                 String[] parts = line.split("\t");
-                //No teams loaded, Accepts only 2 fields
+                // Two-field records are supported for compatibility with saves made before streaks.
                 if (parts.length < 2) continue;
                 try {
                     int score = Integer.parseInt(parts[1].trim());
-                    //Old save files have no streak, so default to 0
                     int streak = parts.length >= 3 ? Integer.parseInt(parts[2].trim()) : 0;
                     teams.add(new Player(parts[0], score, streak));
-                } catch (NumberFormatException ignored) { }
-                //Skips lines where score or streak isn't a valid number
+                } catch (NumberFormatException ignored) {
+                    // Skip only the invalid record so other saved teams can still be restored.
+                }
             }
         } catch (IOException e) {
-            //if loading fails, print problem
+            // Report read failures while allowing the application to start with an empty list.
             System.err.println("Could not load teams: " + e.getMessage());
         }
     }

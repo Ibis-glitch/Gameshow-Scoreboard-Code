@@ -21,6 +21,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/** Controls the Fast Money screen, survey refresh, answer matching, and round totals. */
 public class FastMoney {
 
     @FXML
@@ -46,6 +47,7 @@ public class FastMoney {
 
     @FXML
     private void initialize() {
+        // Each question occupies one row in the FXML grid; retain its controls for scoring.
         for (int row = 1; row <= 5; row++) {
             QuestionRow questionRow = new QuestionRow(
                     cell(1, row, Label.class),
@@ -57,6 +59,7 @@ public class FastMoney {
         }
 
         for (QuestionRow row : questionRows) {
+            // Recompute immediately as either contestant edits an answer.
             row.contestant1Answer.textProperty().addListener((observable, oldValue, newValue) -> updateScores());
             row.contestant2Answer.textProperty().addListener((observable, oldValue, newValue) -> updateScores());
         }
@@ -69,6 +72,7 @@ public class FastMoney {
         refreshButton.setDisable(true);
         statusLabel.setText("Loading latest survey responses...");
 
+        // Fetch on a worker thread so network latency does not block the JavaFX event loop.
         CompletableFuture
                 .supplyAsync(() -> {
                     try {
@@ -81,6 +85,7 @@ public class FastMoney {
                     }
                 })
                 .whenComplete((counts, failure) -> Platform.runLater(() -> {
+                    // Controls must be updated on the JavaFX application thread.
                     refreshButton.setDisable(false);
                     if (failure != null) {
                         Throwable cause = failure;
@@ -92,6 +97,7 @@ public class FastMoney {
                         return;
                     }
 
+                    // Apply the complete response set only after a successful fetch.
                     for (int index = 0; index < questionRows.size(); index++) {
                         FastMoneyQuestion question = counts.get(index);
                         questionRows.get(index).showQuestion(question.getQuestion());
@@ -109,6 +115,7 @@ public class FastMoney {
 
     @FXML
     private void showSurveyQrCode() {
+        // Fail visibly if the optional image was not packaged with the application.
         var imageResource = FastMoney.class.getResource("/csa/sti/fastmoney-form-qr.png");
         if (imageResource == null) {
             statusLabel.setText("The survey QR image is missing from the application resources.");
@@ -148,6 +155,7 @@ public class FastMoney {
         int secondTotal = 0;
 
         for (QuestionRow row : questionRows) {
+            // Each contestant earns only the count attached to an exact normalized answer.
             int firstPoints = row.pointsFor(row.contestant1Answer.getText());
             int secondPoints = row.pointsFor(row.contestant2Answer.getText());
             row.contestant1Points.setText(Integer.toString(firstPoints));
@@ -164,6 +172,7 @@ public class FastMoney {
     }
 
     private <T extends Node> T cell(int column, int row, Class<T> type) {
+        // Resolve FXML controls by grid coordinate and fail clearly if the layout is incomplete.
         return responseGrid.getChildren().stream()
                 .filter(node -> Integer.valueOf(column).equals(GridPane.getColumnIndex(node)))
                 .filter(node -> Integer.valueOf(row).equals(GridPane.getRowIndex(node)))
@@ -206,6 +215,7 @@ public class FastMoney {
         }
 
         private int pointsFor(String answer) {
+            // A non-survey answer scores zero.
             return responses.stream()
                     .filter(response -> response.matches(answer))
                     .mapToInt(FastMoneyResponse::getCount)
