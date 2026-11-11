@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 
 /**
  * JvaFX App
- */
+*/
 public class App extends Application {
 
     private static Scene scene;

@@ -42,6 +42,7 @@ public class Gameboard {
     private int selectedQuestionRow;
     private Player selectedTeam;
     private int selectedPointValue;
+    private boolean doublePointsApplied;
     //Buttons created and UI styled by Gargi, Panels created by Jimmy, Functions for buttons defined by Sophie
     //builds the category names and the 25 question buttons when the gameboard opens
     @FXML
@@ -77,20 +78,25 @@ public class Gameboard {
                 questionButton.setPrefSize(110, 50);
                 questionButton.setDisable(GameState.isQuestionUsed(column, row));
                 questionButton.setOnAction(event -> {
-                    //if a question is already selected, nothing happens
-                    if (selectedQuestionButton != null) {
+                    if (selectedQuestionButton == questionButton) {
+                        clearQuestionSelection("Select a team and a question to track points");
                         return;
                     }
-                    //Getting the value from the teamPicker
-                    Player team = teamPicker.getValue();
+
+                    Player team = selectedTeam == null ? teamPicker.getValue() : selectedTeam;
                     if (team == null) {
                         new Alert(Alert.AlertType.INFORMATION, "Add or select a team first.").showAndWait();
                         return;
                     }
+                    if (selectedQuestionButton != null) {
+                        selectedQuestionButton.getStyleClass().remove("selected-question");
+                    }
                     selectedQuestionButton = questionButton;
+                    selectedQuestionButton.getStyleClass().add("selected-question");
                     selectedQuestionColumn = questionColumn;
                     selectedQuestionRow = questionRow;
                     selectedTeam = team;
+                    doublePointsApplied = false;
                     selectedPointValue = questionColumn == 4
                         ? ThreadLocalRandom.current().nextInt(100, 501)
                         : points;
@@ -98,7 +104,8 @@ public class Gameboard {
                     correctButton.setDisable(false);
                     incorrectButton.setDisable(false);
                     stealButton.setDisable(false);
-                    doublePointsButton.setDisable(false);
+                    doublePointsButton.setDisable(!isDoublePointsQuestion(
+                        selectedQuestionColumn, selectedQuestionRow));
                     questionStatusLabel.setText(category + " - " + selectedPointValue + " points");
                 });
 
@@ -138,7 +145,7 @@ public class Gameboard {
     @FXML
     private void markCorrect() {
         if (selectedTeam != null && selectedQuestionButton != null) {
-            awardPoints(selectedTeam, selectedPointValue);
+            awardPoints(selectedTeam, pointsForSelectedQuestion());
             finishQuestion();
         }
     }
@@ -146,21 +153,23 @@ public class Gameboard {
     @FXML
     private void markIncorrect() {
         if (selectedTeam != null && selectedQuestionButton != null) {
-            deductPoints(selectedTeam, selectedPointValue);
+            deductPoints(selectedTeam, pointsForSelectedQuestion());
             finishQuestion();
         }
     }
 
     @FXML
     private void doublePoints() {
-        if (selectedQuestionButton == null || doublePointsButton.isDisabled()) {
+        if (selectedQuestionButton == null
+                || !isDoublePointsQuestion(selectedQuestionColumn, selectedQuestionRow)
+                || doublePointsButton.isDisabled()) {
             return;
         }
 
-        selectedPointValue = Math.multiplyExact(selectedPointValue, 2);
+        doublePointsApplied = true;
         doublePointsButton.setDisable(true);
         questionStatusLabel.setText(categories[selectedQuestionColumn] + " - "
-            + selectedPointValue + " points (doubled)");
+            + pointsForSelectedQuestion() + " points (doubled)");
     }
 
     @FXML
@@ -180,10 +189,10 @@ public class Gameboard {
         ChoiceDialog<Player> dialog = new ChoiceDialog<>(eligibleTeams.get(0), eligibleTeams);
         dialog.setTitle("Steal Points");
         dialog.setHeaderText("Which team is stealing " + selectedTeam.getName()
-            + "'s " + selectedPointValue + " points?");
+            + "'s " + pointsForSelectedQuestion() + " points?");
         dialog.setContentText("Stealing team:");
         dialog.showAndWait().ifPresent(stealingTeam -> {
-            stealPoints(stealingTeam, selectedTeam, selectedPointValue);
+            stealPoints(stealingTeam, selectedTeam, pointsForSelectedQuestion());
             finishQuestion();
         });
     }
@@ -191,11 +200,12 @@ public class Gameboard {
     @FXML
     private void clearBoard() {
         GameState.clearUsedQuestions();
-        for (Button[] column : buttons) {
-            for (Button questionButton : column) {
-                questionButton.setDisable(false);
-            }
+        for (Player team : GameState.getTeams()) {
+            team.setScore(0);
         }
+        clearQuestionSelection("Select a team and a question to track points");
+        setQuestionButtonsDisabled(false);
+        updateScoreLabel(teamPicker.getValue());
     }
 
     private void updateScoreLabel(Player team) {
@@ -204,15 +214,40 @@ public class Gameboard {
 
     private void finishQuestion() {
         GameState.markQuestionUsed(selectedQuestionColumn, selectedQuestionRow);
-        selectedQuestionButton.setDisable(true);
+        clearQuestionSelection("Select a team and a question.");
+        setQuestionButtonsDisabled(false);
+    }
+
+    private void clearQuestionSelection(String status) {
+        if (selectedQuestionButton != null) {
+            selectedQuestionButton.getStyleClass().remove("selected-question");
+        }
         selectedQuestionButton = null;
         selectedTeam = null;
         selectedPointValue = 0;
+        doublePointsApplied = false;
         teamPicker.setDisable(false);
         correctButton.setDisable(true);
         incorrectButton.setDisable(true);
         stealButton.setDisable(true);
         doublePointsButton.setDisable(true);
-        questionStatusLabel.setText("Select a team and a question.");
+        questionStatusLabel.setText(status);
+    }
+
+    private boolean isDoublePointsQuestion(int column, int row) {
+        return (column == 2 && row == 2) || (column == 4 && row == 4);
+    }
+
+    private int pointsForSelectedQuestion() {
+        return doublePointsApplied ? Math.multiplyExact(selectedPointValue, 2) : selectedPointValue;
+    }
+
+    private void setQuestionButtonsDisabled(boolean disabled) {
+        for (int column = 0; column < buttons.length; column++) {
+            for (int row = 0; row < buttons[column].length; row++) {
+                buttons[column][row].setDisable(
+                    disabled || GameState.isQuestionUsed(column, row));
+            }
+        }
     }
 }

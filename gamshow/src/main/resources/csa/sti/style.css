@@ -68,35 +68,41 @@
 }
 
 .gameboard {
-    -fx-background-color: #ffb6c1; /* Light pink background */
+    -fx-background-color: #7a7bb0;
 }
 
 .gameboard .title {
     -fx-font-size: 50px;
     -fx-font-weight: bold;
-    -fx-text-fill: #974b57;
+    -fx-text-fill: #29243b;
 }
 
 .gameboard .button {
-    -fx-background-color: white;
-    -fx-text-fill: #974b57;
+    -fx-background-color: #a3aeec;
+    -fx-text-fill: #29243b;
     -fx-font-size: 16px;
     -fx-background-radius: 8;
     -fx-cursor: hand;
 }
 
 .gameboard .button:hover {
-    -fx-background-color: #d69fa7; 
+    -fx-background-color: #494a69;
 }
+
+.gameboard .button.selected-question {
+    -fx-border-color: #494a69;
+    -fx-border-width: 3;
+    -fx-border-radius: 8;
+}
+
 .button:disabled {
     -fx-background-color: #d3d3d3; /* Standard light gray */
     -fx-text-fill: #808080;         /* Muted gray text */
     -fx-opacity: 0.8; 
 }
 
-/* --- Pink Gameboard Disabled Button Style --- */
 .gameboard .button:disabled {
-    -fx-background-color: #e2b9bf; /* A muted, darker dusty-pink/gray */
-    -fx-text-fill: #855c63;         /* Faded text color */
-    -fx-opacity: 0.7; 
+    -fx-background-color: #a3aeec;
+    -fx-text-fill: #29243b;
+    -fx-opacity: 1;
 }
